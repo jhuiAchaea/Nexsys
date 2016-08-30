@@ -23,7 +23,7 @@ Download System Package file from: https://github.com/jhuiAchaea/Nexsys/archive/
 
 Unzip and find Nexsys Package.nxs
 
-Open Nexus Client Settings and Import file.
+Open Nexus Client and go to Reflex Packages (Not Settings!) and import the Nexsys Package.nxs file.
 
 Type 'load' to load the system.  It's just an alias for run_function("onLoad", {}, "ALL"), so won't have to type load every time.
 
