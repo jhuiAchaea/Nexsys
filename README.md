@@ -19,7 +19,9 @@ Nexus Client Recommendations:
 
 ## Install
 
-Download System Package file from:
+Download System Package file from: https://github.com/jhuiAchaea/Nexsys/archive/master.zip
+
+Unzip and find Nexsys Package.nxs
 
 Open Nexus Client Settings and Import file.
 
@@ -35,13 +37,13 @@ System should automatically unpause after startup is complete.
 
 The goal of the system is to only have to modify tables or specific logic sections if you need to make changes, so don't worry about understanding it completely.
 
-Other Packages will be released that use this system so also look at those to understand how to use it.
+Other Packages are included in the zip but more will be released that use this system so also look at those to understand how to use it.
 
 ### Custom Settings
 
-For now, it is recommended that you create a separate package to hold your local settings so that when I do updates, you won't lose your custom settings.  Below is an example Package that contains my exact settings that override the default settings.
+For now, it is recommended that you create a separate package to hold your local settings so that when I do updates, you won't lose your custom settings.
 
-My Local Settings Package:
+Included in the zip was a file that contains my exact settings that override the default settings: Custom Settings Package.nxs
 
 Settings are saved to the server(look under Variables tab and you'll see them), but I haven't provided a nice way to view and modify these settings on the fly yet, so keeping a settings package locally is safer bet until I get that completed.  Theoretically, you could just modify the system setttings and delete those variables every time, and it'll recreate them with your settings.
 
