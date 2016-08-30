@@ -1,7 +1,13 @@
 # Nexsys
 Curing System for Achaea Nexus Client
 
+NOTE: Don't try to use this on a mobile device just yet.  Recommend using Chrome or Firefox.  It's coded heavily with ECMAScript 6 features, and some browsers don't have ES6 support.  I will eventually transpile it to ECMAScript 5 and release something that can be used on mobile.
+
 This is an initial release just to get some Nexus code out there.  It's far from its final state, but hopefully people will use it.
+
+It does not have defences and cures for every class, but it should have majority of Runewarden, Monk, Dragon, Alchemist, Blademaster, Magi and Serpent defences/cures.  You can see how to add your own if you don't want to wait on me to add them all.
+
+Rather than releasing a specific API for the system, I just completely exposed the system.  I recommend just using the way I coded things as an example in your own packages.  Feel free to overwrite anything you don't like.
 
 Nexus Client Recommendations:
 - use small scrollback buffer size (200 or so).  System shouldn't bog browser down, but a large buffer will.
@@ -13,7 +19,7 @@ Nexus Client Recommendations:
 
 ## Install
 
-Download nxs file from: 
+Download System Package file from:
 
 Open Nexus Client Settings and Import file.
 
@@ -31,33 +37,51 @@ The goal of the system is to only have to modify tables or specific logic sectio
 
 Other Packages will be released that use this system so also look at those to understand how to use it.
 
-### System Settings
+### Custom Settings
 
-Look under system->system and modify the settings there
+For now, it is recommended that you create a separate package to hold your local settings so that when I do updates, you won't lose your custom settings.  Below is an example Package that contains my exact settings that override the default settings.
 
-### Aff Settings
+My Local Settings Package:
 
-Look under affs->affTable and modify serverside curing prios there
+Settings are saved to the server(look under Variables tab and you'll see them), but I haven't provided a nice way to view and modify these settings on the fly yet, so keeping a settings package locally is safer bet until I get that completed.  Theoretically, you could just modify the system setttings and delete those variables every time, and it'll recreate them with your settings.
 
-### Balance Settings
+### System Startup
 
-If you need to add your own balance, add to balanceTable and follow the pattern for other balances
+This is responsible for bootstrapping (loading up) the system.  It basically just performs run_function a lot of times and in the right order.
 
-### Def Settings
+client.eventStream is the main event bus for the system.  Most things register and raise events on the eventStream.  You'll get a feel for it when you poke around the system.
 
-Look under defs->defTable and add defs if you need.  Modify the keepup and static prio objects at the bottom to change your prios.  Use defService to create aliases to change your prios on the fly in game.
+SystemLoaded is run when the system is completely loaded.  I generally put SystemLoaded as the package name in my other packages so that those aren't loaded until the system is.
 
-### Cure Settings
+### System
+
+Holds system state and settings and is where basic system functionality resides.
+
+### Affs
+
+Holds aff tables and prios. Aff service has some helpful utility functions.
+
+### Balances
+
+Holds balance tables.  If you need to add your own balance, add to balanceTable from another package and follow the pattern for other balances
+
+### Defs
+
+Holds def table and keepup/defup prios. Use defService to create aliases to change your prios on the fly in game.
+
+If you need to add your own defs, add to defTable from another package and follow pattern.  Be sure to add the classes that can use that def if it's class specific.
+
+### Cures
 
 Look under cures->cureTable to see how cures are handled.  Most are set to prio 0 because they are handled by serverside curing.  Class cures like fitness, dragonheal, etc, start at prio 0, but are moved to a different prio when they are needed (see serverside->PrioritySwapping).
 
-### Cache Settings
+### Cache
 
-Look under cache->cacheTable and modify the amount you want to precache for each herb/mineral there.
+Holds cache herb/mineral maps and amounts.
 
 ### Lust
 
-Look under lust->lust and set your whitelist there.  Otherwise it should reject everyone else.
+override client.whiteList in a separate package.  it should reject everyone else.
 
 ### GMCP
 
@@ -88,6 +112,8 @@ It also modifies two things with the default logger: 1) it does not log gagged l
 #### promptOverride
 
 promptOverride holds all things related to custom prompt.  It essentially uses display_notice to build up a prompt.  This prompt is built off of the client.prompt.vars object.  These variables get set by listening to events and changing them there.  This is safer than being reliant on a function to exist to return us prompt information.  Take a look, it should be relatively easy to add your own stuff.
+
+I do not have a way to store prompt settings just yet, but the functions and tables could be over-written and functionality added in your own package as long as it loads after this package.
 
 ### commonTables
 
@@ -159,23 +185,22 @@ dora command is 'dor' but it will repeat an alias every 1 second.
 
 #### doCommandWhenCan
 
-this will be where we want to add functionality like 'dv' (diag when we can).  You can implement your own stuff here and perform your own logic to determine if you can do it or not.  The system will run getCommandsToDo in its normal output.
+this will be where we want to add functionality like 'dv' (diag when we can).  You can implement your own stuff here (preferably override in your own package) and perform your own logic to determine if you can do it or not.  The system will run getCommandsToDo in its normal output.
 
 
 ### gags
 
 Common gags are in here.  Nexus does not show prompt if all lines in a block are gagged, so no need for a deleteLine + prompt function.
 
+### highlights
+
+Common highlights are in here.
+
 ## TODO List
 
 - retard detection
 - block commands on aeon
 - defences/cures/balances for all classes
-- more user friendly ways to interact with systm out of the box
+- more user friendly ways to interact with system out of the box
 - more custom prompt options/easier way to set custom prompt than in code
-- way to map setting configurations to nexus variables so can store/load from server so when people upgrade, they won't lose previously configured settings
-
-
-
-
-
+- way to view, edit, and save settings through HTML rather than in the code
